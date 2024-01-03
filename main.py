@@ -3,11 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'database'
-app.secret_key = 'psichka'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE')
+app.secret_key = os.getenv('SECRET_KEY')
 app.jinja_env.add_extension('jinja2.ext.do')
 db = SQLAlchemy(app)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -29,9 +31,9 @@ class User(db.Model):
 
 def create_admin():
     with app.app_context():
-        db.create_all()  # Ensure that tables are created
-        admin_username = "username"
-        admin_password = "password"
+        db.create_all()  
+        admin_username = f"{os.getenv('USERNAME')}"
+        admin_password = f"{os.getenv('PASSWORD')}"
         hashed_password = generate_password_hash(admin_password, method='pbkdf2:sha256')
 
         admin_user = User.query.filter_by(username=admin_username).first()
