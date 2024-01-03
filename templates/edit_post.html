@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{article.title}}{% endblock %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('post_article') }}" enctype="multipart/form-data">
+  <input type="hidden" name="article_id" value="{{ article.id }}">
+
+  <div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" name="title" class="form-control" value="{{ article.title }}" required>
+  </div>
+
+  <div class="form-group">
+    <label for="text">Text</label>
+    <textarea name="text" class="form-control" rows="6" required>{{ article.text }}</textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+{% endblock %}
