@@ -112,4 +112,4 @@ if __name__ == "__main__":
     def view(article_id):
         article = Blog.query.get(article_id)
         return render_template("view.html",article=article)
-    app.run(debug=True)
+    app.run(debug=False)
