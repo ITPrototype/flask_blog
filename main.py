@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'database'
-app.secret_key = 'psichka'
+app.secret_key = 'secret key'
 app.jinja_env.add_extension('jinja2.ext.do')
 db = SQLAlchemy(app)
 app.config['UPLOAD_FOLDER'] = 'uploads'
