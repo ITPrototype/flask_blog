@@ -5,11 +5,12 @@ from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
+
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f'{os.getenv("DATABASE")}'
-app.secret_key = f'{os.getenv("SECRET_KEY")}'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.secret_key = os.getenv("SECRET_KEY")
 app.jinja_env.add_extension('jinja2.ext.do')
 db = SQLAlchemy(app)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -18,8 +19,7 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     text = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow() + timedelta(hours=5))
-
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,13 +27,11 @@ class User(db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-
-
 def create_admin():
     with app.app_context():
-        db.create_all()  
-        admin_username = f"{os.getenv('USERNAME')}"
-        admin_password = f"{os.getenv('PASSWORD')}"
+        db.create_all()
+        admin_username = os.getenv('USERNAME')
+        admin_password = os.getenv('PASSWORD')
         hashed_password = generate_password_hash(admin_password, method='pbkdf2:sha256')
 
         admin_user = User.query.filter_by(username=admin_username).first()
@@ -42,7 +40,6 @@ def create_admin():
             admin_user = User(username=admin_username, password_hash=hashed_password, is_admin=True)
             db.session.add(admin_user)
             db.session.commit()
-  
 
 if __name__ == "__main__":
     create_admin()
